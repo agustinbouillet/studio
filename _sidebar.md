@@ -3,12 +3,17 @@
 
 * [HOME](./)
 
-* [Tutorials](./tutorials/index)
-  * [Tomcat](./tutorials/tomcat/index)
-  * [Cloud](./tutorials/cloud/index)
-  * [Java](./tutorials/java/index)
+* [Pantalla de monitoreo](./monitor/index)
+  * [Redes sociales](./monitor/redes-sociales/index)
+  * [Tiempos de sesión](./monitor/sesion/index)
+  * [Espacios](./monitor/espacios/index)
+  * [Alertas](./monitor/alertas/index)
+  * [Open weather](./monitor/alertas/index)
+  * [Estado extendido](./monitor/alertas/index)
 
-* [About](./about/index)
 
-* [Contact](./contact/index)
+
+* [Acerca de](./about/index)
+
+* [Contacto](./contact/index)
 
