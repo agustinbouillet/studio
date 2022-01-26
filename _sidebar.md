@@ -8,7 +8,7 @@
   * [Tiempos de sesión](./monitor/sesion/index)
   * [Espacios](./monitor/espacios/index)
   * [Alertas](./monitor/alertas/index)
-  * [Open weather](./monitor/open-weahter/index)
+  * [Open weather](./monitor/open-weather/index)
   * [Estado extendido](./monitor/estado-extendido/index)
 
 
