@@ -4,12 +4,13 @@ El módulo de timeout se encarga de proveer seguridad en la pantalla de monitore
 
 La actividad está concebida como acciones directas del usuario en la pantalla, como por ejemplo: hacer clic sobre un objeto.
 
-Configuración
+## Configuración
+
 Este módulo tiene tres opciones de configuración. Una es la activación del módulo y la otra es el tiempo de sesión.
 
 En .env
 
-```
+```bash
 # -----------------------------
 # SESSION MONITOR
 # -----------------------------
@@ -21,6 +22,8 @@ SESSION_STRICT_MODE=False
 
 | Parámetro | Descripción |
 |---|---|
-| `SESSION_MONITOR` | Permite activar o desactivar el módulo session.js.<br /> - `True` _(default)_, Activo.<br /> - `False`, Inactivo.|
-| `SESSION_MONITOR_TIMEOUT` | Especifica el tiempo en minutos que debe durar la sesión.<br />1=60” |
-| `SESSION_STRICT_MODE` | Modalidad de uso del timeout.<br /> - `False` _(default)_. Timeout fijo, cada _n_ minutos aparecerá el diálogo pidiendo continuar o interrumpir sesión.<br /> - `True`. Habilita el modo de sesión expandible. |
+| `SESSION_MONITOR` | Permite activar o desactivar el módulo session.js.<br /><br /> - `True` _(default)_, Activo.<br /> - `False`, Inactivo.|
+| `SESSION_MONITOR_TIMEOUT` | Especifica el tiempo en minutos que debe durar la sesión.<br /><br />1=60” |
+| `SESSION_STRICT_MODE` | Modalidad de uso del timeout.<br /><br /> - `False` _(default)_. Timeout fijo, cada _n_ minutos aparecerá el diálogo pidiendo continuar o interrumpir sesión.<br /> - `True`. Habilita el modo de sesión expandible. |
+
+
