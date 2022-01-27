@@ -10,7 +10,7 @@ Este módulo tiene tres opciones de configuración. Una es la activación del m�
 
 En .env
 
-```bash
+```
 # -----------------------------
 # SESSION MONITOR
 # -----------------------------
@@ -22,8 +22,11 @@ SESSION_STRICT_MODE=False
 
 | Parámetro | Descripción |
 |---|---|
-| `SESSION_MONITOR` | Permite activar o desactivar el módulo session.js.<br /><br /> - `True` _(default)_, Activo.<br /> - `False`, Inactivo.|
-| `SESSION_MONITOR_TIMEOUT` | Especifica el tiempo en minutos que debe durar la sesión.<br /><br />1=60” |
-| `SESSION_STRICT_MODE` | Modalidad de uso del timeout.<br /><br /> - `False` _(default)_. Timeout fijo, cada _n_ minutos aparecerá el diálogo pidiendo continuar o interrumpir sesión.<br /> - `True`. Habilita el modo de sesión expandible. |
+| `SESSION_MONITOR` | Permite activar o desactivar el módulo session.js.<br /><ul><li>`True` _(default)_, Activo.</li><li>`False`, Inactivo.</li></ul>|
+| `SESSION_MONITOR_TIMEOUT` | Especifica el tiempo en minutos que debe durar la sesión.<br /><br />1 = 60” |
+| `SESSION_STRICT_MODE` | Modalidad de uso del timeout.<br /><ul><li>`False` _(default)_. Timeout fijo, cada _n_ minutos aparecerá el diálogo pidiendo continuar o interrumpir sesión.</li><li>`True`. Habilita el modo de sesión expandible.</li></ul>|
+
+
+
 
 
