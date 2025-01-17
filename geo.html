@@ -100,7 +100,7 @@
             const {latitude, longitude} = position.coords;
             const {timestamp} = position;
             
-            let data = {latitude, longitude, timestamp};
+            let data = [latitude, longitude, timestamp];
             storage.push( data );
             
             localStorage.setItem('route', JSON.stringify(storage))
@@ -108,7 +108,7 @@
 
         writeData( localStorage.getItem('route') )
         
-    }, 5000);
+    }, 10000);
 
 
     /**
