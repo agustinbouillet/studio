@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        html, body {
+            height: 100%;
+        }
+        body {
+            font-family: Tahoma, sans-serif;
+            font-size: 18px;
+            padding: .25em 1em;
+            color:#5a5a5a;
+            background: #f4f4f4;
+        }
+
+        button {
+            font-family: inherit;
+            font-size: 1rem;
+            padding: .5em 1em;
+            border-radius: 9px;
+            cursor: pointer;
+            background:  color-mix(in srgb, dodgerblue 10%, white 100%);
+            border: 2px solid color-mix(in srgb, dodgerblue 60%, white 30%)
+        }
+        button:hover {
+            background:  color-mix(in srgb, dodgerblue 40%, white 100%);
+        }
+
+        .data-display {
+            font-family: 'Courier New', Courier, monospace; 
+            font-size: .75rem;
+            border: 1px solid #ccc;
+            padding: .5rem;
+            margin: 1em 0;
+            border-radius: 9px;
+            width: calc(100% - 1rem);
+        }
+    </style>
+</head>
+<body>
+    <h1>Geo track</h1>
+    <div>
+        <textarea id="geo-data" class="data-display" cols="80" rows="16">
+
+        </textarea>
+    </div>
+    <button class="js-clean-storage">Clear storage</button>
+
+    <script>
+    function writeData(data){
+        const body = document.querySelector('#geo-data');
+        body.value = "";
+        body.value = data;
+    }
+
+    /**
+     * Obtiene la ubicación a través del navegador
+     * 
+     * @example 
+     * // {
+     * //  oords: {
+     * //       accuracy: 11.524,
+     * //       altitude: null,
+     * //       altitudeAccuracy: null,
+     * //       heading: null,
+     * //       latitude: -34.6219396,
+     * //       longitude: -58.4437514,
+     * //       speed: null
+     * //    },
+     * //    timestamp: 1691154803064
+     * // }
+     * await currentPosition().then(position => {
+     *   ...
+     * });
+     * @return {object} Información de coordenadas.
+     */
+    function currentPosition() {
+        return new Promise((resolve, reject) => {
+            navigator.geolocation.getCurrentPosition(resolve, reject);
+        });
+    }
+
+    setInterval(function(){
+        currentPosition().then(position => {
+        
+            if(!position){
+                console.error("No se puede obtener información")
+                return;
+            }
+            let storage = JSON.parse( localStorage.getItem('route') ) || []; 
+        
+            const {latitude, longitude} = position.coords;
+            const {timestamp} = position;
+            
+            let data = {latitude, longitude, timestamp};
+            storage.push( data );
+            
+            localStorage.setItem('route', JSON.stringify(storage))
+        });   
+
+        writeData( localStorage.getItem('route') )
+        
+    }, 5000);
+
+    document.querySelectorAll('.js-clean-storage').forEach(function(e){
+        e.addEventListener("click", function(){
+            localStorage.removeItem('route');
+        });
+    });
+    </script>
+</body>
+</html>
