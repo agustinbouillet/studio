@@ -37,23 +37,28 @@
             margin: 1em 0;
             border-radius: 9px;
             width: calc(100% - 1rem);
+            max-height: 500px;
+            overflow: auto;
+            background: #333;
+            color:white
         }
     </style>
 </head>
 <body>
     <h1>Geo track</h1>
     <div>
-        <textarea id="geo-data" class="data-display" cols="80" rows="16">
+        <div id="geo-data" class="data-display" >
 
-        </textarea>
+        </div>
     </div>
     <button class="js-clean-storage">Clear storage</button>
+    <button class="js-copy">Copy to clipboard</button>
 
     <script>
     function writeData(data){
         const body = document.querySelector('#geo-data');
-        body.value = "";
-        body.value = data;
+        body.innerHTML = "";
+        body.textContent = data;
     }
 
     /**
@@ -105,9 +110,48 @@
         
     }, 5000);
 
+
+    /**
+     * Copia texto en el portapapeles (clipboard)
+     * 
+     * @param {string} selector Selector html, ej: .class o #id
+     * @param {function} callback Función de retorno.
+     * @returns {void}
+     */
+    function copyToClipboard(selector, callback) {
+        if(typeof selector !== "string" || selector == ""){
+            return;
+        }
+
+        const copyText = document.querySelector(selector);
+        if(!copyText){
+            console.error("[copyToClipboard] No se puede encontrar el elemento.");
+            return;
+        }
+        const str = copyText.textContent;
+        navigator.clipboard.writeText(str)
+            .then(function(){
+                if(typeof callback === "function"){
+                    callback(copyText);
+                }
+            }, function(){
+                console.error("[copyToClipboard] No se puede copiar el texto.");
+            });
+    }
+
+
     document.querySelectorAll('.js-clean-storage').forEach(function(e){
         e.addEventListener("click", function(){
             localStorage.removeItem('route');
+        });
+    });
+
+
+    document.querySelectorAll('.js-copy').forEach(function(e){
+        e.addEventListener("click", function(){
+            copyToClipboard("#geo-data", function(e){
+                console.log(e)
+            });
         });
     });
     </script>
