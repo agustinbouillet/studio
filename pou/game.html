@@ -2,23 +2,30 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Document</title>
     <style>
-        body {
+        *, *::before, *::after { box-sizing: border-box; }
+
+        html, body {
             margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
             overflow: hidden;
             font-family: sans-serif;
+        }
+
+        body {
             background-image: url('./fondo.jpeg');
             background-size: cover;
-            background-position: 0 0;
+            background-position: center center;
             background-repeat: no-repeat;
+            background-attachment: fixed;
         }
 
         #imagen {
             position: absolute;
-            top: 200px;
-            left: 200px;
             width: 60px;
             height: 60px;
             z-index: 10;
@@ -28,13 +35,15 @@
         #puntaje {
             position: fixed;
             top: 16px;
-            left: 16px;
-            font-size: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 22px;
             font-weight: bold;
             background: rgba(255,255,255,0.85);
             padding: 6px 16px;
             border-radius: 8px;
             z-index: 100;
+            white-space: nowrap;
         }
 
         /* Pantalla de selección de nivel */
@@ -52,27 +61,26 @@
         }
 
         #pantalla-nivel h1 {
-            font-size: 36px;
+            font-size: 32px;
             margin: 0 0 12px;
+            text-align: center;
+            padding: 0 16px;
         }
 
         #pantalla-nivel button {
-            font-size: 20px;
-            padding: 14px 36px;
+            font-size: 18px;
+            padding: 14px 24px;
             border: none;
             border-radius: 12px;
             cursor: pointer;
-            width: 280px;
+            width: min(280px, 80vw);
             font-weight: bold;
             transition: transform .1s;
         }
 
-        #pantalla-nivel button:active {
-            transform: scale(0.96);
-        }
-
-        #btn-facil  { background: #4caf50; color: white; }
-        #btn-medio  { background: #ff9800; color: white; }
+        #pantalla-nivel button:active { transform: scale(0.96); }
+        #btn-facil   { background: #4caf50; color: white; }
+        #btn-medio   { background: #ff9800; color: white; }
         #btn-dificil { background: #f44336; color: white; }
 
         #mensaje {
@@ -81,36 +89,33 @@
             inset: 0;
             background: rgba(0,0,0,0.6);
             color: white;
-            font-size: 40px;
+            font-size: clamp(24px, 6vw, 40px);
             font-weight: bold;
             justify-content: center;
             align-items: center;
             flex-direction: column;
-            gap: 20px;
+            gap: 16px;
             z-index: 200;
             text-align: center;
             padding: 24px;
-            box-sizing: border-box;
         }
 
         #mensaje button {
-            font-size: 18px;
-            padding: 10px 28px;
+            font-size: 16px;
+            padding: 10px 24px;
             border: none;
             border-radius: 8px;
             cursor: pointer;
             background: white;
             color: black;
-            margin-top: 8px;
         }
 
         .circulo {
             position: absolute;
-            width: 100px;
-            height: 100px;
+            width: 70px;
+            height: 70px;
             border-radius: 50%;
             border: 4px solid rebeccapurple;
-            box-sizing: border-box;
             z-index: 5;
         }
 
@@ -123,22 +128,17 @@
             background: rgba(255, 220, 0, 0.6);
         }
 
+        /* ── Controles: portrait (abajo centrado) ── */
         #controles {
             position: fixed;
-            bottom: 24px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: grid;
-            grid-template-columns: repeat(3, 64px);
-            grid-template-rows: repeat(3, 64px);
-            gap: 6px;
             z-index: 100;
+            display: none; /* se muestra con JS */
         }
 
         #controles button {
-            width: 64px;
-            height: 64px;
-            font-size: 28px;
+            width: 60px;
+            height: 60px;
+            font-size: 26px;
             border: none;
             border-radius: 12px;
             background: rgba(255,255,255,0.75);
@@ -150,18 +150,65 @@
             user-select: none;
         }
 
-        #controles button:active {
-            background: rgba(255,255,255,0.95);
+        #controles button:active { background: rgba(255,255,255,0.95); }
+
+        /* portrait */
+        @media (orientation: portrait) {
+            #controles {
+                bottom: max(24px, env(safe-area-inset-bottom));
+                left: 50%;
+                transform: translateX(-50%);
+                display: grid;
+                grid-template-columns: repeat(3, 60px);
+                grid-template-rows: repeat(3, 60px);
+                gap: 6px;
+            }
+
+            #btn-arriba { grid-column: 2; grid-row: 1; }
+            #btn-izq    { grid-column: 1; grid-row: 2; }
+            #btn-der    { grid-column: 3; grid-row: 2; }
+            #btn-abajo  { grid-column: 2; grid-row: 3; }
         }
 
-        #btn-arriba  { grid-column: 2; grid-row: 1; }
-        #btn-izq     { grid-column: 1; grid-row: 2; }
-        #btn-der     { grid-column: 3; grid-row: 2; }
-        #btn-abajo   { grid-column: 2; grid-row: 3; }
+        /* landscape: izq/der a la izquierda, arriba/abajo a la derecha */
+        @media (orientation: landscape) {
+            #controles {
+                /* usamos dos columnas separadas: left-pad y right-pad */
+                /* los botones se posicionan con elementos individuales */
+                display: block;
+                inset: 0;
+                pointer-events: none;
+                background: transparent;
+            }
+
+            #controles button {
+                position: fixed;
+                pointer-events: all;
+            }
+
+            /* Izquierda: botones ◀ y ▶ apilados verticalmente al borde izq */
+            #btn-izq {
+                left: max(12px, env(safe-area-inset-left));
+                top: calc(50% - 66px);
+            }
+            #btn-der {
+                left: max(12px, env(safe-area-inset-left));
+                top: calc(50% + 6px);
+            }
+
+            /* Derecha: botones ▲ y ▼ apilados verticalmente al borde der */
+            #btn-arriba {
+                right: max(12px, env(safe-area-inset-right));
+                top: calc(50% - 66px);
+            }
+            #btn-abajo {
+                right: max(12px, env(safe-area-inset-right));
+                top: calc(50% + 6px);
+            }
+        }
     </style>
 </head>
 <body>
-    <!-- Pantalla de selección de nivel -->
     <div id="pantalla-nivel">
         <h1>Elegí tu nivel</h1>
         <button id="btn-facil"   onclick="iniciarJuego(4)">Primer &nbsp;💣💣💣💣</button>
@@ -170,6 +217,7 @@
     </div>
 
     <div id="puntaje" style="display:none">Puntos: 0</div>
+
     <div id="mensaje">
         <span id="texto-mensaje"></span>
         <button onclick="volverAlMenu()">Cambiar nivel</button>
@@ -178,7 +226,7 @@
 
     <img id="imagen" src="https://upload.wikimedia.org/wikipedia/commons/d/d3/Pou_from_the_Pou_video_game.png" alt="imagen" style="display:none">
 
-    <div id="controles" style="display:none">
+    <div id="controles">
         <button id="btn-arriba">▲</button>
         <button id="btn-izq">◀</button>
         <button id="btn-der">▶</button>
@@ -186,12 +234,12 @@
     </div>
 
     <script>
-        const INCREMENTO = 20;
-        const RADIO = 50;
-        const TOTAL_PUNTOS = 10;
-        const SRC_ORIGINAL = "https://upload.wikimedia.org/wikipedia/commons/d/d3/Pou_from_the_Pou_video_game.png";
+        const INCREMENTO    = 20;
+        const RADIO_CIRCULO = 35; // mitad de 70px
+        const TOTAL_PUNTOS  = 10;
+        const SRC_ORIGINAL   = "https://upload.wikimedia.org/wikipedia/commons/d/d3/Pou_from_the_Pou_video_game.png";
         const SRC_ALTERNATIVA = "https://play-lh.googleusercontent.com/H6V_UqXdT3iyCGW_NSqo1biEfu_bexVARF9UytZNS3zUxDgywlIQOGsNjMoBdi74Nzc";
-        const SRC_BOMBA = "https://cdn.vectorstock.com/i/1000v/02/61/time-bomb-on-white-background-vector-8860261.jpg";
+        const SRC_BOMBA      = "https://cdn.vectorstock.com/i/1000v/02/61/time-bomb-on-white-background-vector-8860261.jpg";
 
         const imagen       = document.getElementById("imagen");
         const puntajeEl    = document.getElementById("puntaje");
@@ -203,24 +251,40 @@
         let puntos = 0;
         let juegoActivo = false;
         let totalPeligrosos = 4;
-
-        const posiciones = [
-            { x: 150, y: 400 }, { x: 450, y: 150 }, { x: 700, y: 450 },
-            { x: 950, y: 200 }, { x: 300, y: 600 }, { x: 600, y: 300 },
-            { x: 1100, y: 500 }, { x: 850, y: 350 }, { x: 200, y: 700 },
-            { x: 500, y: 550 }, { x: 1000, y: 100 }, { x: 750, y: 600 },
-            { x: 400, y: 350 }, { x: 1200, y: 300 },
-        ];
-
         let circulos = [];
+
+        // Genera posiciones aleatorias dentro de los límites visibles de la pantalla
+        function generarPosiciones(cantidad) {
+            const margen    = 80;
+            const anchoMax  = window.innerWidth  - margen * 2;
+            const altoMax   = window.innerHeight - margen * 2;
+            const posiciones = [];
+            let intentos = 0;
+
+            while (posiciones.length < cantidad && intentos < 1000) {
+                intentos++;
+                const x = margen + Math.random() * anchoMax;
+                const y = margen + Math.random() * altoMax;
+                // Evitar solapamiento entre círculos
+                const separado = posiciones.every(p => {
+                    const dx = p.x - x, dy = p.y - y;
+                    return Math.sqrt(dx * dx + dy * dy) > 100;
+                });
+                if (separado) posiciones.push({ x, y });
+            }
+            return posiciones;
+        }
 
         function crearCirculos() {
             const total = TOTAL_PUNTOS + totalPeligrosos;
-            const mezcladas = [...posiciones].sort(() => Math.random() - 0.5).slice(0, total);
-            return mezcladas.map((pos, i) => ({
-                x: pos.x,
-                y: pos.y,
-                peligroso: i >= TOTAL_PUNTOS,
+            const pos   = generarPosiciones(total);
+            // mezclar para que los peligrosos no estén siempre al final visualmente
+            const indices = [...Array(total).keys()].sort(() => Math.random() - 0.5);
+            const peligrosos = new Set(indices.slice(0, totalPeligrosos));
+            return pos.map((p, i) => ({
+                x: p.x,
+                y: p.y,
+                peligroso: peligrosos.has(i),
                 tocado: false,
                 el: null,
             }));
@@ -231,7 +295,7 @@
                 const div = document.createElement("div");
                 div.classList.add("circulo");
                 div.style.left = c.x + "px";
-                div.style.top = c.y + "px";
+                div.style.top  = c.y + "px";
                 document.body.appendChild(div);
                 circulos[i].el = div;
             });
@@ -248,7 +312,7 @@
             const iw = imagen.offsetWidth, ih = imagen.offsetHeight;
 
             circulos.forEach(c => {
-                const dentro = hayInterseccion(ix, iy, iw, ih, c.x, c.y, RADIO);
+                const dentro = hayInterseccion(ix, iy, iw, ih, c.x, c.y, RADIO_CIRCULO);
                 if (dentro) {
                     if (c.peligroso) {
                         c.el.classList.add("peligro");
@@ -281,22 +345,25 @@
         function iniciarJuego(bombas) {
             totalPeligrosos = bombas;
             pantallaEl.style.display = "none";
-            puntajeEl.style.display = "block";
-            imagen.style.display = "block";
-            controlesEl.style.display = "grid";
+            puntajeEl.style.display  = "block";
+            imagen.style.display     = "block";
+            controlesEl.style.display = "";  // deja que CSS lo maneje
 
             circulos.forEach(c => c.el && c.el.remove());
             circulos = crearCirculos();
             renderizarCirculos();
 
             puntos = 0;
-            puntajeEl.textContent = "Puntos: 0";
-            juegoActivo = true;
+            puntajeEl.textContent   = "Puntos: 0";
+            juegoActivo             = true;
             mensajeEl.style.display = "none";
 
-            imagen.style.left = "200px";
-            imagen.style.top = "200px";
-            imagen.src = SRC_ORIGINAL;
+            // Posición inicial centrada
+            const startX = Math.floor(window.innerWidth  / 2 - 30);
+            const startY = Math.floor(window.innerHeight / 2 - 30);
+            imagen.style.left    = startX + "px";
+            imagen.style.top     = startY + "px";
+            imagen.src           = SRC_ORIGINAL;
             imagen.style.opacity = "1";
         }
 
@@ -306,13 +373,13 @@
         }
 
         function volverAlMenu() {
-            mensajeEl.style.display = "none";
+            mensajeEl.style.display   = "none";
             circulos.forEach(c => c.el && c.el.remove());
             circulos = [];
-            puntajeEl.style.display = "none";
-            imagen.style.display = "none";
+            puntajeEl.style.display   = "none";
+            imagen.style.display      = "none";
             controlesEl.style.display = "none";
-            pantallaEl.style.display = "flex";
+            pantallaEl.style.display  = "flex";
         }
 
         function moverDerecha()  { imagen.style.left = (imagen.offsetLeft + INCREMENTO) + "px"; }
@@ -321,13 +388,16 @@
         function moverArriba()   { imagen.style.top  = (imagen.offsetTop  - INCREMENTO) + "px"; }
 
         function verificarCambioImagen() {
+            if (!juegoActivo) return;
             const x = imagen.offsetLeft, y = imagen.offsetTop;
-            const dentro = x < 900 && x + imagen.offsetWidth > 700 &&
-                           y < 500 && y + imagen.offsetHeight > 300;
+            const w = window.innerWidth, h = window.innerHeight;
+            const dentro = x < w * 0.75 && x + imagen.offsetWidth  > w * 0.5 &&
+                           y < h * 0.6  && y + imagen.offsetHeight > h * 0.3;
             imagen.src = dentro ? SRC_ALTERNATIVA : SRC_ORIGINAL;
         }
 
         function verificarZona() {
+            if (!juegoActivo) return;
             const x = imagen.offsetLeft, y = imagen.offsetTop;
             const dentro = x < 200 && x + imagen.offsetWidth > 0 &&
                            y < 200 && y + imagen.offsetHeight > 0;
@@ -363,10 +433,18 @@
         document.addEventListener("touchend", e => {
             const dx = e.changedTouches[0].clientX - touchStartX;
             const dy = e.changedTouches[0].clientY - touchStartY;
-            if (Math.abs(dx) < 10 && Math.abs(dy) < 10) return;
+            if (Math.abs(dx) < 15 && Math.abs(dy) < 15) return;
             if (Math.abs(dx) > Math.abs(dy)) mover(dx > 0 ? moverDerecha : moverIzquierda);
             else mover(dy > 0 ? moverAbajo : moverArriba);
         }, { passive: true });
+
+        // Redistribuir círculos al rotar la pantalla
+        window.addEventListener("resize", () => {
+            if (!juegoActivo) return;
+            circulos.forEach(c => c.el && c.el.remove());
+            circulos = crearCirculos();
+            renderizarCirculos();
+        });
     </script>
 </body>
 </html>
