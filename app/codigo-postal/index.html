@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />
+
+    <title>Códigos Postales Argentinos</title>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link 
+    rel="stylesheet" 
+    href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" />
+<link 
+    rel="stylesheet" 
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" 
+    integrity="sha512-5A8nwdMOWrSz20fDsjczgUidUBR8liPYU+WymTZP1lmY9G6Oc7HlZv156XqnsgNUzTyMefFTcsFH/tnJE/+xBg=="
+    crossorigin="anonymous" 
+    referrerpolicy="no-referrer" />  
+<link 
+    rel="stylesheet" 
+    href="https://capacita-back.argentina.gob.ar/profiles/argentinagobar/themes/contrib/poncho/css/icono-arg.css?rfqjsh">
+
+    <link rel="stylesheet" href="https://www.argentina.gob.ar/profiles/argentinagobar/themes/contrib/poncho/css/poncho.min.css">
+</head>
+<body>
+<h1>Códigos Postales Argentinos</h1>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <form action="">
+                <div class="form-group m-b-1">
+                    <label class="form-label" for="province">Provincia</label>
+                    <select id="province" name="province" class="js-province form-control">
+                        <option value="AR-C">Ciudad Autónoma de Buenos Aires</option>
+                        <option value="AR-B">Buenos Aires</option>
+                        <option value="AR-K">Catamarca</option>
+                        <option value="AR-X">Córdoba</option>
+                        <option value="AR-W">Corrientes</option>
+                        <option value="AR-H">Chaco</option>
+                        <option value="AR-U">Chubut</option>
+                        <option value="AR-E">Entre Ríos</option>
+                        <option value="AR-P">Formosa</option>
+                        <option value="AR-Y">Jujuy</option>
+                        <option value="AR-L">La Pampa</option>
+                        <option value="AR-F">La Rioja</option>
+                        <option value="AR-M">Mendoza</option>
+                        <option value="AR-N">Misiones</option>
+                        <option value="AR-Q">Neuquén</option>
+                        <option value="AR-R">Río Negro</option>
+                        <option value="AR-A">Salta</option>
+                        <option value="AR-J">San Juan</option>
+                        <option value="AR-D">San Luis</option>
+                        <option value="AR-Z">Santa Cruz</option>
+                        <option value="AR-S">Santa Fe</option>
+                        <option value="AR-G">Santiago del Estero</option>
+                        <option value="AR-T">Tucumán</option>
+                        <option value="AR-V">Tierra del Fuego, Antártida e Islas del Atlántico Sur</option>
+                    </select>
+                </div>
+                <div class="form-group m-b-1">
+                    <label class="form-label" for="locality">Localidad</label>
+                    <select id="locality" name="locality" class="js-example-basic-single form-control" required>
+                        <option value="5001">Ciudad Autónoma de Buenos Aires</option>
+                    </select>
+                </div>
+                <div class="form-group m-b-1">
+                    <label class="form-label" for="street">Calle</label>
+                    <input type="text" id="street" class="form-control" name="street" required />
+                </div>
+                <div class="form-group m-b-1">
+                    <label class="form-label" for="number">Altura</label>
+                    <input type="number" id="number" class="form-control" name="number" required autocomplete="off">
+                </div>
+                <div class="form-group m-b-1">
+                    <input type="submit" id="submit" value="Obtener CPA" class="btn btn-primary">
+                </div>
+            </form>
+            <div id="result"></div>
+        </div>
+
+        <div class="col-md-8">
+            <!-- PONCHO MAP SEARCH -->
+            <form action="">
+                <div data-scope="poncho-map-search">
+                    <label for="search">Buscar</label>
+                    <div class="input-group">
+                        <input 
+                            type="search" 
+                            name="search" 
+                            autocomplete="off"
+                            id="search"
+                            class="js-poncho-map-search__input form-control" 
+                            list="list">
+                            <datalist id="list" class="js-porcho-map-search__list"></datalist>
+                        <span class="input-group-btn">
+                        <button class="js-poncho-map-search__submit btn btn-primary" aria-label="Buscar puntos">
+                            <i class="fa fa-search text-white">&nbsp;</i><span class="sr-only">Buscar</span>
+                        </button>
+                        </span>
+                    </div>
+                    <div data-scope="poncho-map" class="m-b-1">
+                        <div class="js-poncho-map__help small text-default"></div>
+                    </div>
+                </div>
+            </form>
+            <!-- / PONCHO MAP SEARCH -->
+
+            <!-- PONCHO MAP -->
+            <div class="poncho-map" data-scope="poncho-map">
+                <div
+                    class="leaflet-container leaflet-touch leaflet-fade-anim 
+                            leaflet-grab leaflet-touch-drag leaflet-touch-zoom"
+                    id="map"
+                    style="height: 600px; width: 100%;"
+                    tabindex="0">
+                </div>
+            </div>
+            <!-- / PONCHO MAP -->
+        </div>
+
+
+
+</div>
+</div>
+
+
+<!-- INCLUDE SCRIPTS -->
+<script src="https://mapa-ign.argentina.gob.ar/js/leaflet/leaflet.js"></script>
+<link href="https://mapa-ign.argentina.gob.ar/js/leaflet/leaflet.css" rel="stylesheet"/> 
+<script src="https://www.argentina.gob.ar/profiles/argentinagobar/themes/contrib/poncho/js/poncho.min.js"></script>
+<script
+src="https://code.jquery.com/jquery-3.7.1.min.js"
+integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<!-- / INCLUDE SCRIPTS -->
+
+
+<!-- SCRIPTS -->
+<script>
+headStyle('s', `.select2 {border: solid 1px #555 !important;}`);
+    
+const SERVICE = 'https://api.bouillet.com.ar/api/v1/cpa/';
+
+function getMap(province, cpa){
+    // init
+    (async() => {
+        const prov = String(province).replace(/ar-/i, '').toLowerCase();
+        const entries = await fetch_json( `${SERVICE}${prov}` ); 
+
+        // map options
+        const options = {
+            scope: "poncho-map",
+            title: "name_depto",
+            id: "postal",
+            marker: "azul",
+            slider: false,
+            hash: true,
+            headers: {
+                postal: "Código postal"
+            },
+            theme_map: "dark",
+            theme_ui: "relax",
+            template_structure : {  
+                "values": ["postal"]
+            }
+        };
+
+        try {
+            pm.map.remove();
+            pm = null;
+        } catch (error) {
+            console.error("no se puede iniciar")   
+        }
+
+        // render map
+        const pm = new PonchoMapFilter(entries, options);
+        pm.render();
+        pm.fitBounds();
+        
+        // Buscador
+        const search_options = {
+            "scope": "poncho-map-search", 
+            "datalist": false,
+            "placeholder": "Buscar código postal",
+            "search_fields": ["postal","name_depto"]
+        };
+        const search = new PonchoMapSearch(pm, search_options);
+        search.render();
+
+        if(cpa.trim() != "0"){
+            search.searchTerm(cpa);
+        }
+    })();
+}
+</script>
+<!-- / SCRIPTS -->
+
+<!-- scripts -->
+<script>
+function setSelect(data){
+    const elem = document.querySelector("#locality");
+    if(!elem){
+        console.error("No se puede encontrar #locality");
+        return;
+    }
+    elem.innerHTML = "";
+    data.forEach(([id, province, name, partido]) => {
+        const option = document.createElement("option");
+        option.value = id;
+        const partidoName = partido != name ? partido : false;
+        option.textContent = [name, partidoName].filter(Boolean).join(" – ");
+
+        elem.appendChild(option);
+    });
+}
+
+
+function retriveCPA(){
+    const displayResult = document.querySelector("#result");
+    if(!displayResult){
+        console.error("No se puede encontrar #result");
+        return;
+    }
+    displayResult.innerHTML = "";
+
+    const form = document.querySelector("form");
+    const formData = new FormData(form);
+
+    var object = {};
+    formData.forEach((value, key) => object[key] = value);
+    const {province, locality, street, number} = object;
+
+    (async () => {
+        const url = `${SERVICE}${province}/${locality}/${street}/${number}`;
+        const googlesheetData = await fetch_json(url);
+        displayResult.innerHTML = `<h2>CPA: ${googlesheetData.cpa}</h2>`;
+        getMap(province, googlesheetData.cp);
+    })();
+}
+
+
+// Init
+(async () => {
+    const gapi = new GapiSheetData();
+    let url = gapi.url( "dataset", "1B9GE2OhnAxGvAmw8wDBqPdD41auHpUoviNgvMW_SR9s");
+    url = `${SERVICE}localities`;
+    const googlesheetData = await fetch_json(url);
+    let {values} = googlesheetData;
+
+    // Default AR-C
+    const data = values.filter(entry => entry[1] == "AR-C")
+    setSelect(data);
+    $('.js-example-basic-single').select2({width: '100%'});
+    getMap("c", "0");
+
+    const selectProvince = document.querySelector("#province");
+    selectProvince.addEventListener("change", (e) => {
+        const province = e.target.value;
+        const data = values.filter(entry => entry[1] == province)
+        setSelect(data);
+
+        $('.js-example-basic-single').select2({width: '100%'});
+    });
+
+})();
+
+
+const submit = document.querySelector("#submit");
+submit.addEventListener("click", async (e) => {
+    e.preventDefault();
+    retriveCPA();
+});
+
+
+$(document).ready(function() {
+    $('.js-example-basic-single').select2({width: '100%'});
+});
+</script>
+
+</body>
+</html>
